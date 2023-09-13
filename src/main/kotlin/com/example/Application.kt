@@ -17,5 +17,6 @@ fun Application.module() {
     DatabaseFactory.init()
     configureSerialization()
     val dao = DAOFacadeImpl ()
+
     configureRouting(dao)
 }
