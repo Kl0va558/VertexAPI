@@ -11,11 +11,8 @@ object DatabaseFactory{
     fun init() {
         val database = Database.connect(
             "jdbc:postgresql://localhost:5432/VertexTest", driver = "org.postgresql.Driver",
-            user = "postgres", password = "V783278k"
+            user = "postgres", password = "zxc123"
         )
-        transaction(database) {
-
-        }
     }
 }
 suspend fun <T> dbQuery(block: suspend () -> T): T =
