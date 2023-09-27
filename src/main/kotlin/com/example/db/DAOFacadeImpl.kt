@@ -1,5 +1,6 @@
 package com.example.db
 
+import com.example.models.Category
 import com.example.models.Product
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
@@ -10,10 +11,15 @@ class DAOFacadeImpl : DAOFacade {
     private fun resultRowToProduct(row: ResultRow) = Product(
         id = row[Products.id],
         weight = row[Products.weight],
-        image = row[Products.image],
-        article = row[Products.article],
-        category = row[Products.category],
-        name = row[Products.name]
+        image = row[Products.image].toString(),
+        category_id = row[Products.category_id],
+        name = row[Products.name],
+        description = row[Products.description].toString()
+    )
+
+    private fun resultRowToCategory(row: ResultRow) = Category(
+        article = row[Categories.article],
+        name = row[Categories.name]
     )
 
     override suspend fun allProducts(): List<Product> = dbQuery {
@@ -21,8 +27,9 @@ class DAOFacadeImpl : DAOFacade {
     }
 
     override suspend fun product(category: String): List<Product> = dbQuery {
+        val category: Category? = Categories.select { Categories.name eq category }.map(::resultRowToCategory).single()
         Products
-            .select { Products.category eq category }
+            .select { Products.category_id eq category!!.article}
             .map(::resultRowToProduct)
     }
 
