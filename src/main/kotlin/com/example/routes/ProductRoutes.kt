@@ -12,4 +12,16 @@ fun Routing.productRouting(dao: DAOFacade) {
             call.respond(dao.product(category))
         }
     }
+
+    route("/product"){
+        get {
+            call.respond(dao.productId(call.parameters["productId"]!!.toInt() ))
+        }
+    }
+
+    route("/productsWithNmId"){
+        get {
+            call.respond(dao.productsWithNmId())
+        }
+    }
 }

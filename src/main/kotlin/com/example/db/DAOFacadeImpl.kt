@@ -12,9 +12,11 @@ class DAOFacadeImpl : DAOFacade {
         id = row[Products.id],
         weight = row[Products.weight],
         image = row[Products.image].toString(),
-        category_id = row[Products.category_id],
+        category_id = row[Products.category_id]!!.toInt(),
         name = row[Products.name],
-        description = row[Products.description].toString()
+        description = row[Products.description].toString(),
+        article = row[Products.article].toString(),
+        nmid = row[Products.nmid].toString()
     )
 
     private fun resultRowToCategory(row: ResultRow) = Category(
@@ -27,12 +29,19 @@ class DAOFacadeImpl : DAOFacade {
     }
 
     override suspend fun product(category: String): List<Product> = dbQuery {
-        val category: Category? = Categories.select { Categories.name eq category }.map(::resultRowToCategory).single()
+        val categoryExp: Category = Categories.select { Categories.name eq category }.map(::resultRowToCategory).single()
         Products
-            .select { Products.category_id eq category!!.article}
+            .select { Products.category_id eq categoryExp.article}
             .map(::resultRowToProduct)
     }
 
+    override suspend fun productId(id: Int): List<Product> = dbQuery {
+        Products.select{Products.id eq id}.map(::resultRowToProduct)
+    }
+
+    override suspend fun productsWithNmId(): List<Product> = dbQuery{
+        Products.select { Products.nmid neq  "#Н/Д" }.map (::resultRowToProduct)
+    }
     override suspend fun addNewProduct(name: String): Product? {
         TODO("Not yet implemented")
     }
